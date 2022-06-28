@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "inquirer": "^9.0.0",
+    "mysql2": "^2.3.3"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "name": "week12-homework",
+  "description": "Employee Tracker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/th19776675/week12-homework.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/th19776675/week12-homework/issues"
+  },
+  "homepage": "https://github.com/th19776675/week12-homework#readme"
+}
