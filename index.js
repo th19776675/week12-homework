@@ -33,7 +33,7 @@ function view(tableName) {
 }
 
 function add(tableName) {
-  if (tableName === "employee"){
+  if (tableName === "employee" || tableName === "updateEmp"){
     const sql = "SELECT role.title, role.id FROM role"
     db.query(sql, (err, rows) => {
       if (err) {
@@ -58,7 +58,7 @@ function add(tableName) {
 }
 
 function addA(tableName, arrA) {
-  if (tableName === "employee"){
+  if (tableName === "employee" || tableName === "updateEmp"){
     const sql = "SELECT employee.first_name, employee.last_name, employee.id FROM employee"
     db.query(sql, (err, rows) => {
       if (err) {
@@ -73,7 +73,11 @@ function addA(tableName, arrA) {
         }
         empArr.push(empObj)
       })
-      addB(tableName, arrA, empArr)
+      if (tableName === "employee"){
+        addB(tableName, arrA, empArr)
+      } else {
+        updateEmpRole(arrA, empArr)
+      }
     })
   } else if (tableName === "role") {
      addB(tableName, arrA, [])
@@ -82,7 +86,38 @@ function addA(tableName, arrA) {
   }
 }
 
+function getEmpRoleSql(response, roleArr, empArr) {
+  const roleId = roleArr.filter((role) => role.title === response.role)[0].id
+  const empId = empArr.filter((emp) => emp.name === response.employee)[0].id
+  const sql = `UPDATE employee SET role_id = ${roleId} WHERE id = ${empId}`
+  return sql
+}
 
+function updateEmpRole(roleArr, empArr) {
+  inquirer.prompt([
+    {
+      type: "list",
+      name: "employee",
+      message: "Which employee would you like to change?",
+      choices: empArr.map((emp) => emp.name),
+    },
+    {
+      type: "list",
+      name: "role",
+      message: "What is their new role?",
+      choices: roleArr.map((role) => role.title),
+    }
+  ]).then((response) => {
+    db.query(getEmpRoleSql(response, roleArr, empArr), (err, rows) => {
+      if (err) {
+        console.log("Error");
+        return;
+      }
+      console.log("Successfully updated employee role!")
+      init()
+    })
+  })
+}
 
 function getEmpSQl(empObj, rolesArr, empArr) {
   const roleId = rolesArr.filter((role) => role.title === empObj.role)[0].id
@@ -202,6 +237,8 @@ function addB(tableName, arrA, arrB) {
   })
 }
 
+
+
 function init() {
   inquirer.prompt([
     {
@@ -229,7 +266,7 @@ function init() {
         add("employee");
       break;
       case "Update Employee Role":
-        updateEmployeeRole()
+        add("updateEmp")
       break;
       case "View All Roles":
         view("role");
